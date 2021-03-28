@@ -1,0 +1,76 @@
+{% load humanize %}
+
+
+<div id="accordion" class="mt-4">
+  {% for project in projects %}
+    <div class="card">
+      <div class="card-header btn btn-link" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+        <div class="d-flex justify-content-between">
+          <h5 class="mb-0">
+            <button class="btn btn-outline-dark js-update-project" data-url="{% url 'projects:project_update' project.id %}">
+              {{ project.name }}
+            </button>
+          </h5>
+          <div>
+            {% for tag in project.tags.all %}
+              <a class="badge badge-pill badge-info ">{{ tag }}</a>  
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Task lists -->
+    <div id="collapse{{ forloop.counter }}" class="collapse collapsable" aria-labelledby="heading{{ forloop.counter }}">
+      <div class="card-body">
+        {% if project.task_set.all %}
+        <div class="container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Task</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Done</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for task in project.task_set.all %} 
+                {% if task.completed_recently or not task.completed %}
+                  <tr>
+                    <td>
+                      {% if task.completed %}
+                        <del>
+                          {{ task }}
+                        </del>
+                      {% else %}
+                        {{ task }}
+                      {% endif %}
+                      </td>
+                    <td>
+                        {% if task.due_date %}
+                          {% if task.completed %}
+                          <del>
+                            {{ task.due_date|naturaltime  }}
+                          </del>
+                          {% else %}
+                            {{ task.due_date|naturaltime  }}
+                          {% endif %}
+                        {% endif %}
+                      </td>
+                    <td><button class="btn js-completed-toggle {% if task.completed %}btn-warning{% else %}btn-success{% endif %}" data-url={% url 'projects:task_toggle' task.id %}>Done</button></td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+          <p>No tasks found</p>
+        {% endif %}
+        <a href="#" class="js-create-task" data-url="{% url 'projects:task_create' project.id %}" data-proj-id={{ project.id }}>Add new task</a>
+        <br>
+        <div class="d-flex justify-content-between">
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

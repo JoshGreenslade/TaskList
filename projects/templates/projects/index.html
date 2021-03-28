@@ -1,0 +1,94 @@
+{% load bootstrap4 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% bootstrap_messages %}
+{% include 'projects/_task_modal.html' %}
+
+{% load humanize %}
+
+  
+
+<div class="container">
+  <div class="d-flex justify-content-between">
+    <a href="{% url 'projects:create_project' %}">Add new project <i class="bi bi-plus-circle-dotted"></i></a>
+    <a href="#" onclick="$('.collapse').collapse('hide')">Hide all</a>
+  </div>
+  {% if projects %}
+    <div id="accordion" class="mt-4">
+      {% for project in projects %}
+        <div class="card">
+          <div class="card-header btn btn-link collapsed"" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+            <div class="d-flex justify-content-between">
+              <h5 class="mb-0">
+                <button class="btn btn-link">
+                  {{ project.name }}
+                </button>
+              </h5>
+              <div>
+                {% for tag in project.tags.all %}
+                  <a href='#' class="badge badge-pill badge-info">{{ tag }}</a>  
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}">
+          <div class="card-body">
+            {% if project.task_set.all %}
+            <div class="container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Task</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Done</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for task in project.task_set.all %} 
+                    <tr>
+                      <td>{{ task }}</td>
+                      <td>{% if task.due_date %}{{ task.due_date|naturaltime  }}{% endif %}</td>
+                      <td><button class="btn {% if task.completed %}btn-warning{% else %}btn-success{% endif %}" data-task-id={{ task.id }}>Done</button></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+              <p>No tasks found</p>
+            {% endif %}
+            <br>
+            <div class="d-flex justify-content-between">
+              <a data-id="{{ project.id }}" href="#" class="test" onclick='onAddTaskClick("{{ project.id }}", "{{ project.name }}")' data-toggle="modal" data-target="#exampleModal">Add new task</a>
+              <a href="{% url 'projects:add_task' %}">Completed Tasks</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  onAddTaskClick = (project_pk, project_name) => {
+    document.getElementById('task-modal-project-id').value = project_pk
+    document.getElementById('exampleModalLabel').textContent = project_name
+    console.log(project_pk, project_name);
+  }
+
+  onCloseAll = () => {
+    var cards = document.getElementsByClassName('card-header');
+    console.log(cards)
+    function closeCard(card) {
+      if (card.classList.contains('collapsed')) {
+        return
+      } else {
+        card.classList.add("collapsed");
+      }
+    }
+    Array.from(cards).forEach(closeCard);
+  }
+</script>

@@ -1,0 +1,10 @@
+<form method="post" action="{% url 'projects:task_create' form.project %}" class="js-task-create-form">
+  {% csrf_token %}
+  {% include 'projects/includes/partial_modal.html' %}
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">
+      Submit
+    </button>
+  </div>
+</form>

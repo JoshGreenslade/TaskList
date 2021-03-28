@@ -1,0 +1,32 @@
+{% extends 'projects/base.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'projects/js/projects.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+  <h1 class="page-header mt-5">Project List</h1>
+  <div class="d-flex justify-content-between">
+    <!-- <a href="#" onclick="$('.collapse').collapse('hide')">Hide all</a> -->
+  </div>
+
+  <!-- Accordians and project lists -->
+  {% if projects %}
+  <div id="project-accordian">
+    {% include 'projects/includes/partial_project_list.html' %}
+  </div>
+  {% endif %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal-project">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        Hello
+      </div>
+    </div>
+  </div>
+{% endblock %}

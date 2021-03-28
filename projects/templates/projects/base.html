@@ -1,0 +1,32 @@
+{% load bootstrap4 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task List</title>
+  <link rel="stylesheet" href="{% static 'projects/css/style.css' %}">
+</head>
+<body>
+  {% include 'projects/header.html' %}
+  <div class="container">
+    {% block content %}
+    {% endblock %}
+    {% block javascript %}
+    {% endblock %}
+  </div>
+
+  <footer class="footer mt-5">
+    <div class="container">
+      <span class="text-muted"></span>
+    </div>
+  </footer>
+
+</body>
+</html>

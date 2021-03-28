@@ -1,0 +1,15 @@
+<form method="post" action="{% url 'projects:project_update' form.instance.pk %}" class="js-project-update-form">
+  {% csrf_token %}
+  {% include 'projects/includes/partial_modal.html' %}
+  <div class="modal-footer d-flex justify-content-between">
+    <button type="submit" class="btn btn-danger">
+      Delete
+    </button>
+    <div class="">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">
+        Update
+      </button>
+    </div>
+  </div>
+</form>
