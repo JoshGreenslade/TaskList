@@ -63,6 +63,6 @@ class Task(models.Model):
 
     def completed_recently(self):
         if self.completed:
-            if timezone.now() - timedelta(days=1) < self.completed_date:
+            if self.completed_date + timedelta(hours=12) > timezone.now():
                 return True
         return False
