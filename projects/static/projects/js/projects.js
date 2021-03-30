@@ -8,13 +8,14 @@ $(function () {
     let post_cards = $('.collapsable');
     pre_cards.each((idx, value) => {
       if (value.classList.contains("show")) {
-        $('#'+post_cards[idx].id).addClass('no-transition').collapse('show').removeClass('no-transition');
+        if (post_cards[idx]) {
+          $('#'+post_cards[idx].id).addClass('no-transition').collapse('show').removeClass('no-transition');
+        }
       }
     })
   }
 
   var loadForm = function () {
-    console.log('hello')
     var btn = $(this);
     $.ajax({
       url: btn.attr("data-url"),
@@ -54,18 +55,32 @@ $(function () {
     return false;
   };
 
-  var toggleDone = function (e) {
-    var btn = $(this);
-    console.log('Button Pushed ' + btn.attr("data-url"))
+  var _runViewAndCloseModal = function(btn) {
     $.ajax({
       url: btn.attr("data-url"),
       dataType: 'json',
       success: function (data) {
         rerender_projects(data)
+        $("#modal-project").modal("hide");
       }
     });
-
   }
+
+  var toggleDone = function (e) {
+    var btn = $(this);
+    console.log('Button Pushed ' + btn.attr("data-url"))
+    _runViewAndCloseModal(btn);
+  }
+
+  var delete_item = function (e) {
+    var btn = $(this);
+    var confirmed = confirm("Are you sure?");
+    if (confirmed) {
+      console.log('Time to delete: ' + btn.attr("data-url"));
+      _runViewAndCloseModal(btn);
+    }
+  }
+
 
   
 
@@ -79,6 +94,16 @@ $(function () {
   // Update project
   $("#project-accordian").on("click", ".js-update-project", loadForm);
   $("#modal-project").on("submit",".js-project-update-form", saveForm);
+
+  // Update task
+  $("#project-accordian").on("click", ".js-update-task", loadForm);
+  $("#modal-project").on("submit",".js-task-update-form", saveForm);
+
+  // Delete task
+  $("#modal-project").on("click",".js-delete-task", delete_item);
+
+  // Delete project
+  $("#modal-project").on("click",".js-delete-project", delete_item);
 
   // Create task
   $("#project-accordian").on("click", ".js-create-task", loadForm);

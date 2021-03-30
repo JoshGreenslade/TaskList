@@ -2,7 +2,7 @@
   {% csrf_token %}
   {% include 'projects/includes/partial_modal.html' %}
   <div class="modal-footer d-flex justify-content-between">
-    <button type="submit" class="btn btn-danger">
+    <button type="button" class="btn btn-danger js-delete-task" data-url="{% url 'projects:task_delete' form.instance.pk %}">
       Delete
     </button>
     <div class="">

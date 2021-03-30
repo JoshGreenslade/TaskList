@@ -54,6 +54,17 @@ def project_update(request, pk):
     return save_form(request, form, 'projects/includes/partial_project_update.html')
 
 
+def project_delete(request, pk):
+    print('Project deleting')
+    project = get_object_or_404(Project, pk=pk)
+    project.delete()
+    projects = Project.objects.all()
+    data = {}
+    data['html_project_list'] = render_to_string(
+        'projects/includes/partial_project_list.html', {'projects': projects})
+    return JsonResponse(data)
+
+
 def task_create(request, project_pk):
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -88,6 +99,18 @@ def task_update(request, pk):
     else:
         form = TaskForm(instance=task)
     return save_form(request, form, 'projects/includes/partial_task_update.html')
+
+
+def task_delete(request, pk):
+    print('Task deleting')
+    task = get_object_or_404(Task, pk=pk)
+    projects = Project.objects.all()
+    task.delete()
+    data = {}
+    data['html_project_list'] = render_to_string(
+        'projects/includes/partial_project_list.html', {'projects': projects})
+
+    return JsonResponse(data)
 
 
 def task_toggle(request, pk):

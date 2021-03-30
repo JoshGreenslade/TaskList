@@ -52,7 +52,7 @@
                                 {% elif task.is_overdue %}
                                   font-weight-bold text-danger
                                 {% endif %}"> 
-                        {{ task }}
+                        <a href="#" class="js-update-task text-dark" data-url="{% url 'projects:task_update' task.id %}">{{ task }}</a>
                       </p>
                       </td>
                     <td>
