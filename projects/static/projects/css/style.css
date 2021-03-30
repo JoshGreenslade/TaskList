@@ -1,3 +1,11 @@
 .no-transition {
     transition: none !important;
 }
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.glow {
+    box-shadow: 0px 0px 15px rgb(255, 252, 83);
+}

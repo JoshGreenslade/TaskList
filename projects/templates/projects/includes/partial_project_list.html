@@ -4,14 +4,24 @@
 <div id="accordion" class="mt-4">
   {% for project in projects %}
     <div class="card">
-      <div class="card-header btn btn-link" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
-        <div class="d-flex justify-content-between">
-          <h5 class="mb-0">
-            <button class="btn btn-outline-dark js-update-project" data-url="{% url 'projects:project_update' project.id %}">
-              {{ project.name }}
-            </button>
-          </h5>
-          <div>
+      <div class="card-header btn" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+        
+        <div class="d-flex justify-content-between ">
+          <div class="col col-md-4 text-left">
+            <h5 class="mb-0">
+              <button class="btn btn-outline-dark js-update-project" data-url="{% url 'projects:project_update' project.id %}">
+                {{ project.name }}
+              </button>
+            </h5>
+          </div>
+          <div class="col col-md-4 ">
+            {% if project.is_tasklist_empty %}
+            <strong class="text-primary">No associated tasks</strong>
+            {% elif project.get_overdue_tasks %}
+            <strong class="text-danger"> {{ project.get_overdue_tasks.count }} overdue tasks</strong>
+            {% endif %}
+          </div>
+          <div class="col col-md-4 text-right">
             {% for tag in project.tags.all %}
               <a class="badge badge-pill badge-info ">{{ tag }}</a>  
             {% endfor %}
@@ -37,26 +47,33 @@
                 {% if task.completed_recently or not task.completed %}
                   <tr>
                     <td>
-                      {% if task.completed %}
-                        <del>
-                          {{ task }}
-                        </del>
-                      {% else %}
+                      <p class="{% if task.completed %}
+                                  strikethrough
+                                {% elif task.is_overdue %}
+                                  font-weight-bold text-danger
+                                {% endif %}"> 
                         {{ task }}
-                      {% endif %}
+                      </p>
                       </td>
                     <td>
                         {% if task.due_date %}
-                          {% if task.completed %}
-                          <del>
+                          <p class="{% if task.completed %}
+                                      strikethrough
+                                    {% elif task.is_overdue %}
+                                      font-weight-bold text-danger
+                                    {% endif %}">
                             {{ task.due_date|naturaltime  }}
-                          </del>
-                          {% else %}
-                            {{ task.due_date|naturaltime  }}
-                          {% endif %}
+                          </p>
                         {% endif %}
                       </td>
-                    <td><button class="btn js-completed-toggle {% if task.completed %}btn-warning{% else %}btn-success{% endif %}" data-url={% url 'projects:task_toggle' task.id %}>Done</button></td>
+                    <td><button class="btn js-completed-toggle 
+                                      {% if task.completed %}
+                                        btn-warning glow font-weight-bold text-white
+                                      {% elif task.is_overdue %}
+                                        btn-danger font-weight-bold
+                                      {% else %}
+                                        btn-success 
+                                      {% endif %}" data-url={% url 'projects:task_toggle' task.id %}>Done</button></td>
                   </tr>
                 {% endif %}
               {% endfor %}

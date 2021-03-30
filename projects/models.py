@@ -19,7 +19,15 @@ class Project(models.Model):
         return self.name
 
     def is_tasklist_empty(self):
-        return len(self.task_set)
+        active_tasks = Task.objects.filter(project=self.id, 
+                                           completed=False)
+        return len(active_tasks) == 0
+
+    def get_overdue_tasks(self):
+        overdue_tasks = Task.objects.filter(project=self.id, 
+                                            completed=False,
+                                            due_date__lte=timezone.now())
+        return overdue_tasks
 
 
 class Task(models.Model):
