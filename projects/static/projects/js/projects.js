@@ -1,11 +1,30 @@
 $(function () {
 
+  document.addEventListener("DOMContentLoaded", function(event) { 
+    var scrollpos = sessionStorage.getItem('scrollpos');
+    if (scrollpos) window.scrollTo(0, scrollpos);
+  });
+
+  window.onbeforeunload = function(e) {
+    sessionStorage.setItem('scrollpos', window.scrollY);
+  };
+
+
   /* Functions */
 
   var rerender_projects = function(data) {
+
+    // Set the scroll position of the window
+    sessionStorage.setItem('scrollpos', window.scrollY);
+
+    // Grab the current state of the cards
     let pre_cards = $('.collapsable');
+    // Rerender the page
     $("#project-accordian").html(data.html_project_list);
+    // Grad the new state of the cards
     let post_cards = $('.collapsable');
+
+    // For each card, set it to its original state
     pre_cards.each((idx, value) => {
       if (value.classList.contains("show")) {
         if (post_cards[idx]) {
@@ -13,6 +32,11 @@ $(function () {
         }
       }
     })
+
+    // Rescroll to the original position
+    var scrollpos = sessionStorage.getItem('scrollpos');
+    setTimeout(() => {  window.scroll(0, scrollpos); }, 0.01);
+    
   }
 
   var loadForm = function () {

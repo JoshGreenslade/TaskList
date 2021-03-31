@@ -9,3 +9,11 @@
 .glow {
     box-shadow: 0px 0px 15px rgb(255, 252, 83);
 }
+
+.overdue {
+    background-color: rgba(255, 52, 52, 0.43);
+}
+
+.due_soon {
+    background-color: rgba(255, 230, 52, 0.43);
+}

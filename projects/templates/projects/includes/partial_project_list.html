@@ -15,11 +15,17 @@
             </h5>
           </div>
           <div class="col col-md-4 ">
-            {% if project.is_tasklist_empty %}
-            <strong class="text-primary">No associated tasks</strong>
-            {% elif project.get_overdue_tasks %}
-            <strong class="text-danger"> {{ project.get_overdue_tasks.count }} overdue tasks</strong>
-            {% endif %}
+            <p>
+              {% if project.is_tasklist_empty %}
+                <strong class="text-primary">No associated tasks</strong>
+              {% endif %}
+              {% if project.get_due_soon_tasks %}
+                <strong class="text-warning"> {{ project.get_due_soon_tasks.count }} task(s) due soon.</strong>
+              {% endif %}
+              {% if project.get_overdue_tasks %}
+                <strong class="text-danger"> {{ project.get_overdue_tasks.count }} overdue task(s).</strong>
+              {% endif %}
+            </p>
           </div>
           <div class="col col-md-4 text-right">
             {% for tag in project.tags.all %}
@@ -45,7 +51,7 @@
             <tbody>
               {% for task in project.task_set.all %} 
                 {% if task.completed_recently or not task.completed %}
-                  <tr>
+                  <tr class="{% if task.is_overdue %}overdue{% elif task.due_soon %}due_soon{% endif %}">
                     <td>
                       <p class="{% if task.completed %}
                                   strikethrough
@@ -60,7 +66,7 @@
                           <p class="{% if task.completed %}
                                       strikethrough
                                     {% elif task.is_overdue %}
-                                      font-weight-bold text-danger
+                                      font-weight-bold
                                     {% endif %}">
                             {{ task.due_date|naturaltime  }}
                           </p>
@@ -69,8 +75,6 @@
                     <td><button class="btn js-completed-toggle 
                                       {% if task.completed %}
                                         btn-warning glow font-weight-bold text-white
-                                      {% elif task.is_overdue %}
-                                        btn-danger font-weight-bold
                                       {% else %}
                                         btn-success 
                                       {% endif %}" data-url={% url 'projects:task_toggle' task.id %}>Done</button></td>

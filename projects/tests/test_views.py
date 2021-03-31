@@ -13,7 +13,8 @@ class TestViewsProjectsUnpopulated(TestCase):
     def test_no_projects(self):
         response = self.get_response('index')
 
-        self.assertContains(response, '<p>No projects found</p>')
+        self.assertContains(
+            response, 'Use the button at the top to create a project.')
 
     def test_project_no_tasks(self):
         project = mixer.blend('projects.Project', name='Test Project')

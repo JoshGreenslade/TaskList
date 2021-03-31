@@ -19,20 +19,30 @@ class Project(models.Model):
         return self.name
 
     def is_tasklist_empty(self):
-        active_tasks = Task.objects.filter(project=self.id, 
+        active_tasks = Task.objects.filter(project=self.id,
                                            completed=False)
         return len(active_tasks) == 0
 
     def get_overdue_tasks(self):
-        overdue_tasks = Task.objects.filter(project=self.id, 
+        overdue_tasks = Task.objects.filter(project=self.id,
                                             completed=False,
                                             due_date__lte=timezone.now())
+        return overdue_tasks
+
+    def get_due_soon_tasks(self):
+        overdue_tasks = Task.objects.filter(project=self.id,
+                                            completed=False,
+                                            due_date__lte=timezone.now() + Task.due_soon_time,
+                                            due_date__gte=timezone.now())
         return overdue_tasks
 
 
 class Task(models.Model):
     """ An individual self-contained task
     """
+    recently_completed_time = timedelta(hours=12)
+    due_soon_time = timedelta(days=3)
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
@@ -63,6 +73,14 @@ class Task(models.Model):
 
     def completed_recently(self):
         if self.completed:
-            if self.completed_date + timedelta(hours=12) > timezone.now():
+            if self.completed_date + self.recently_completed_time > timezone.now():
                 return True
+        return False
+
+    def due_soon(self):
+        if self.due_date is not None:
+            if not self.completed:
+                if not self.is_overdue():
+                    if self.due_date - timezone.now() < self.due_soon_time:
+                        return True
         return False
