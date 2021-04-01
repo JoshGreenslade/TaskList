@@ -19,13 +19,14 @@
   <div id="project-accordian">
     {% include 'projects/includes/partial_project_list.html' %}
   </div>
+  {% else %} 
+    <p>To create a new project, click the button in the navbar.</p>
   {% endif %}
 
   <!-- Modal -->
   <div class="modal fade" id="modal-project">
     <div class="modal-dialog">
       <div class="modal-content">
-        Hello
       </div>
     </div>
   </div>
