@@ -28,7 +28,7 @@ class TestModelsProjects(TestCase):
 
     def test_overdue_tasks_none(self):
         project = mixer.blend('projects.Project')
-        due_date = datetime.now() + timedelta(hours=5)
+        due_date = timezone.now() + timedelta(hours=5)
         mixer.cycle(4).blend('projects.Task',
                              project=project, due_date=due_date)
         overdue_tasks = project.get_overdue_tasks()
@@ -40,8 +40,8 @@ class TestModelsProjects(TestCase):
         n_tasks_overdue = 2
         n_tasks_not_overdue = 3
         project = mixer.blend('projects.Project')
-        due_date_yesterday = datetime.now() - timedelta(days=1)
-        due_date_tomorrow = datetime.now() + timedelta(days=1)
+        due_date_yesterday = timezone.now() - timedelta(days=1)
+        due_date_tomorrow = timezone.now() + timedelta(days=1)
         mixer.cycle(n_tasks_overdue).blend('projects.Task',
                                            project=project, due_date=due_date_yesterday)
         mixer.cycle(n_tasks_not_overdue).blend('projects.Task',

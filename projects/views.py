@@ -55,7 +55,6 @@ def project_update(request, pk):
 
 
 def project_delete(request, pk):
-    print('Project deleting')
     project = get_object_or_404(Project, pk=pk)
     project.delete()
     projects = Project.objects.all()
@@ -102,7 +101,6 @@ def task_update(request, pk):
 
 
 def task_delete(request, pk):
-    print('Task deleting')
     task = get_object_or_404(Task, pk=pk)
     projects = Project.objects.all()
     task.delete()
@@ -116,7 +114,6 @@ def task_delete(request, pk):
 def task_toggle(request, pk):
     data = {}
     task = get_object_or_404(Task, pk=pk)
-    print(task)
     if task:
         if task.completed == True:
             task.completed = False
@@ -124,9 +121,7 @@ def task_toggle(request, pk):
             task.completed = True
         task.save()
         projects = Project.objects.all()
+        data['status'] = 200
         data['html_project_list'] = render_to_string(
             'projects/includes/partial_project_list.html', {'projects': projects})
         return JsonResponse(data)
-
-    data['status'] = 404
-    return JsonResponse(data)
